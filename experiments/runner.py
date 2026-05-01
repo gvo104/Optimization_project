@@ -6,10 +6,9 @@ from methods.pso import PSOOptimizer
 from methods.aco import AntColonyOptimizer
 from methods.annealing import SimulatedAnnealingOptimizer
 from utils.display_schedule import format_schedule
-
+from collections import defaultdict
 
 def run_all(config=None):
-    """Запускает все четыре метода оптимизации и возвращает словарь результатов."""
     if config is None:
         config = ScheduleProblemConfig()
 
@@ -22,27 +21,21 @@ def run_all(config=None):
 
     results = {}
     histories = {}
-
     for name, opt in methods.items():
         start = time.time()
-        (tw, x), obj = opt.optimize()
+        solution, obj = opt.optimize()
         elapsed = time.time() - start
         results[name] = {
-            "t_w": tw,
-            "x": x,
+            "t_w": solution[0],
+            "x": solution[1],
+            "free_time": solution[2],
             "objective": obj,
             "time_sec": elapsed
         }
         histories[name] = opt.history
-        print(f"{name}: t_w={tw}, x={x}, obj={obj:.2f}, time={elapsed:.3f}s")
+        # Убрали print для каждого метода, чтобы не дублировать
 
-    # Таблица сравнения
-    print("\n--- Comparison ---")
-    print(f"{'Method':<6} {'t_w':<6} {'x':<4} {'Objective':<12} {'Time, s':<10}")
-    for name, r in results.items():
-        print(f"{name:<6} {r['t_w']:<6} {r['x']:<4} {r['objective']:<12.2f} {r['time_sec']:<10.3f}")
-
-    # График сходимости
+    # График сходимости (опционально)
     plt.figure(figsize=(10, 5))
     for name, hist in histories.items():
         plt.plot(range(1, len(hist)+1), hist, label=name)
@@ -57,23 +50,36 @@ def run_all(config=None):
     return results
 
 
-def print_unique_schedules(results, config):
+def print_unique_schedules(results, config, global_min=None):
     """
-    Группирует решения по уникальным (t_w, x) и выводит расписание для каждого.
-    Перед расписанием перечисляются методы, которые к нему пришли.
+    Группирует решения по уникальным (t_w, x, free_time) и выводит
+    сводную таблицу, затем расписания. Если передан global_min,
+    добавляет его в таблицу для сравнения.
     """
-    from collections import defaultdict
-
-    # Группируем методы по решению (t_w, x)
     groups = defaultdict(list)
     for method_name, res in results.items():
-        key = (res["t_w"], res["x"])
+        key = (res["t_w"], res["x"], res["free_time"])
         groups[key].append(method_name)
 
     print("\n" + "="*60)
-    print("Итоговые варианты расписаний (найдены алгоритмами):\n")
-    for (tw, x), methods in groups.items():
+    print("Сводная таблица результатов")
+    print(f"{'Метод/Глоб. мин':<20} {'t_w':<6} {'x':<4} {'Free':<6} {'Objective':<12} {'Time, s':<10}")
+    for (tw, x, ft), methods in groups.items():
+        method_list = ", ".join(sorted(methods))
+        # Если несколько методов, они перечисляются в одной строке? Лучше отдельно.
+        # Но для единообразия выведем каждую группу
+        obj = results[methods[0]]["objective"]  # все методы в группе имеют один objective
+        time_str = ", ".join([f"{results[m]['time_sec']:.3f}" for m in methods])
+        print(f"{method_list:<20} {tw:<6} {x:<4} {ft:<6} {obj:<12.2f} {time_str:<10}")
+
+    if global_min:
+        tw_g, x_g, ft_g, obj_g = global_min
+        print(f"{'ГЛОБАЛЬНЫЙ МИНИМУМ':<20} {tw_g:<6} {x_g:<4} {ft_g:<6} {obj_g:<12.2f} {'—':<10}")
+
+    print("\n" + "="*60)
+    print("Итоговые варианты расписаний:\n")
+    for (tw, x, ft), methods in groups.items():
         method_list = ", ".join(sorted(methods))
         print(f"Методы: {method_list}")
-        print(format_schedule((tw, x), config))
+        print(format_schedule((tw, x, ft), config))
         print("-"*60)
