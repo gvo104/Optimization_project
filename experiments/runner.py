@@ -44,16 +44,18 @@ def run_all(config=None):
         }
         histories[name] = opt.history
 
-    # Сохраняем график сходимости в output_dir
+    # Сохраняем график сходимости с нормированной осью X
     os.makedirs(config.output_dir, exist_ok=True)
     plt.figure(figsize=(10, 5))
     for name, hist in histories.items():
-        plt.plot(range(1, len(hist) + 1), hist, label=name)
+        n = len(hist)
+        x = [i / (n - 1) for i in range(n)] if n > 1 else [0.0]  # нормировка на [0,1]
+        plt.plot(x, hist, label=f"{name} ({n} iter)")
     plt.yscale('log')
-    plt.xlabel('Iteration')
-    plt.ylabel('Best objective (log)')
+    plt.xlabel('Доля выполненных итераций')
+    plt.ylabel('Лучшее значение objective (log)')
     plt.legend()
-    plt.title('Convergence curves')
+    plt.title('Сходимость алгоритмов (нормированная шкала)')
     plt.grid(True)
     plt.savefig(os.path.join(config.output_dir, 'convergence.png'), dpi=150)
     plt.close()
