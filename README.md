@@ -213,9 +213,14 @@ python main.py
 *Для каждого t_w подобрано лучшее free_time. Цвет точек – выбранное свободное время.*
 
 ### Трёхмерные поверхности (интерактивные HTML)
-- [Поверхность для вечерней учёбы](output/3d_surface_x0.html) ([скриншот](output/3d_surface_x0_screen.png))
-- [Поверхность для утренней учёбы](output/3d_surface_x1.html) ([скриншот](output/3d_surface_x1_screen.png))
-- [Совмещённый график (красный – вечер, синий – утро)](output/3d_both_surfaces.html) ([скриншот](output/3d_both_surfaces_screen.png))
+- [Поверхность для вечерней учёбы](output/3d_surface_x0.html)
+![скриншот](output/3d_surface_x0_screen.png)
+
+- [Поверхность для утренней учёбы](output/3d_surface_x1.html)
+![скриншот](output/3d_surface_x1_screen.png)
+
+- [Совмещённый график (красный – вечер, синий – утро)](output/3d_both_surfaces.html)
+![скриншот](output/3d_both_surfaces_screen.png)
 
 ### Сходимость алгоритмов
 ![convergence](output/convergence.png)
