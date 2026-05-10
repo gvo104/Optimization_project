@@ -114,3 +114,5 @@ class ScheduleProblemConfig:
     pso: PSOConfig = field(default_factory=PSOConfig)
     aco: ACOConfig = field(default_factory=ACOConfig)
     annealing: SimAnnealingConfig = field(default_factory=SimAnnealingConfig)
+    
+    output_dir: str = "output"   # папка для сохранения графиков
