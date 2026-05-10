@@ -41,52 +41,52 @@
 ### 1.4. Целевая функция
 Для допустимого расписания минимизируется сумма штрафов и вознаграждений:
 
-\[
+$$
 \Phi = w_{phase} P_{phase} + P_{debt} + P_{work} + P_{study} + P_{free}
-\]
+$$
 
 #### Фаза сна (штраф)
-\[
+$$
 k = \text{round}\left(\frac{T_{sleep}}{Cycle}\right),
 \quad T_{ideal} = k \cdot Cycle,
 \quad P_{phase} = (T_{sleep} - T_{ideal})^2
-\]
+$$
 
 #### Недосып / пересып
 - Если `T_sleep < T_best_sleep`:
-  \[
+  $$
   P_{debt} = w_{debt} \cdot (T_{best\_sleep} - T_{sleep})^2
-  \]
+  $$
 - Иначе (вознаграждение за лишний сон):
-  \[
+  $$
   P_{debt} = -reward\_extra\_sleep \cdot (T_{sleep} - T_{best\_sleep})
-  \]
+  $$
 
 #### Отклонение начала работы от идеала (асимметричный штраф)
-\[
+$$
 \delta = t_{work\_start} - Ideal\_start
-\]
-\[
+$$
+$$
 P_{work} =
 \begin{cases}
 w_{work\_late} \cdot \delta^2, & \delta \ge 0 \\
 w_{work\_early} \cdot (-\delta)^2, & \delta < 0
 \end{cases}
-\]
+$$
 
 #### Эффективность вечерней учёбы
 Если `x = 0` и `t_study_start > Study_ineffective_after`:
-\[
+$$
 P_{study} = w_{study} \cdot W_{study} \cdot (1 - Study\_eff\_drop)
-\]
+$$
 Иначе `P_study = 0`.
 
 #### Свободное время (вознаграждение)
-\[
+$$
 P_{free} = -reward\_free\_time \cdot free\_time
-\]
+$$
 
-Отрицательные значения Φ означают, что вознаграждения перевесили штрафы.
+Отрицательные значения $\Phi$ означают, что вознаграждения перевесили штрафы.
 
 ## 2. Параметры задачи (конфигурация)
 
@@ -117,7 +117,7 @@ P_{free} = -reward\_free\_time \cdot free\_time
 - reward_free_time = 1
 
 ### Параметры алгоритмов
-Настройки каждого метода (размер популяции, число итераций и т.д.) лежат в отдельных dataclass’ах: `GAConfig`, `PSOConfig`, `ACOConfig`, `SimAnnealingConfig`.
+Настройки каждого метода (размер популяции, число итераций и т.д.) лежат в отдельных dataclass'ах: `GAConfig`, `PSOConfig`, `ACOConfig`, `SimAnnealingConfig`.
 
 ## 3. Методы оптимизации
 
