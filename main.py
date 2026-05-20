@@ -6,7 +6,7 @@
 """
 
 from config import ScheduleProblemConfig
-from experiments.runner import run_all, print_unique_schedules
+from experiments.runner import run_all, print_unique_schedules, run_statistical_comparison, print_statistical_report
 from utils.visualization import (
     plot_heatmap_free,
     plot_optimal_free_slice,
@@ -101,3 +101,7 @@ if __name__ == "__main__":
 
     # 5. Сводная таблица и расписания
     print_unique_schedules(results, config, global_min=global_min_info)
+
+    # 6. Статистическое сравнение (30 запусков каждого метода)
+    scores = run_statistical_comparison(config, n_runs=30)
+    print_statistical_report(scores, config)
