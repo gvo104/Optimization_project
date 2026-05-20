@@ -76,6 +76,7 @@ dependencies:
   - narwhals=2.7.0=py310h06a4308_0
   - ncurses=6.5=h7934f7d_0
   - numpy=2.2.5=py310h08c6c3d_3
+  - scipy
   - numpy-base=2.2.5=py310h00548fb_3
   - openldap=2.6.12=hb446bd0_0
   - openssl=3.5.6=h1b28b03_0
